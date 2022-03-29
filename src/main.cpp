@@ -79,8 +79,7 @@ Param load_params(int argc, char** argv){
 	    ("instance,i", po::value<std::string>(), 
 	    	"instance file path.")
 	    ("solver,s", po::value<std::string>()->default_value("queue"),
-	    	"solver used in each call. queue|forward|priorities|minmax|gen_forward|\
-	    	gen_minmax|all|two_stage")
+	    	"solver used in each call. queue|forward|priorities|minmax|non_miopyc")
 	    ("generator_folder,G", po::value<std::string>()->default_value("calibration/Rect10x10"),
 	    	"scenario generator file path.")
 	    ("debug,d", po::value<bool>()->default_value(false),
@@ -96,14 +95,11 @@ Param load_params(int argc, char** argv){
 	    ("h_order_time, T", po::value<bool>()->default_value(false), 
 	    	"In Heuristic, order calls by time. default = false")
 	    ("n_nearest_hospitals", po::value<int>()->default_value(1),
-	    	"Number of nearest hospitals to a location l that can receive the patients of \
-	    	 an emergency in l. default = 1")
+	    	"Number of nearest hospitals to a location l that can receive the patients of an emergency in l. default = 1")
 	    ("n_nearest_ambs", po::value<int>()->default_value(5),
-	    	"In the Model Heuristic, number of nearest ambulances that will be evaluated \
-	    	 via optimization model. default = 3.")
+	    	"In the Model Heuristic, number of nearest ambulances that will be evaluated via optimization model. default = 3.")
 	    ("n_queue_calls_eval", po::value<int>()->default_value(3),
-	    	"In the Model Heuristic, number of calls in the queue that will be evaluated \
-	    	 via optimization model. default = 3.")
+	    	"In the Model Heuristic, number of calls in the queue that will be evaluated via optimization model. default = 3.")
 	    ("n_scenarios", po::value<int>()->default_value(100),
 	    	"Number of generated scenarios from distribution data.")
 	    ("n_time_slots", po::value<int>()->default_value(12),
@@ -122,8 +118,7 @@ Param load_params(int argc, char** argv){
 	    	"utils/osrm/RiodeJaneiro.osrm"),
 	    	"Path for the .osrm file used for Open Street Map time and distance library.")
 	    ("extended_model", po::bool_switch()->default_value(false),
-	    	"In the Model, uses all sets of variables (don't assume near hospital/base).\
-	    	 default = false.")
+	    	"In the Model, uses all sets of variables (don't assume near hospital/base). default = false.")
 	    ("h_random_hospital", po::bool_switch()->default_value(false),
 	    	"In Heuristic, calls go to a random hospital. default = false")
 	;
