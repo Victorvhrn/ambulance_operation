@@ -110,8 +110,37 @@ void PolicyTester::one_stage_old(){
 				solver->run_times.end());
 			for(int i = 0; i < scenario.size(); ++i){
 				waiting_on_scene[s].push_back(solver->waiting_on_scene[i]);
-				waiting_on_scene_penalized[s].push_back(solver->waiting_on_scene_penalized[i]);
+				waiting_on_scene_penalized[s].push_back(
+					solver->waiting_on_scene_penalized[i]);
 			}
+			const string policy_name = policies_names.find(policy)->second;
+			ofstream ambs_times(fmt::format("daily_results/AMBS/{}/{}_times.txt",
+			policy_name,policy_name), ios_base::app);
+			ofstream ambs_trips(fmt::format("daily_results/AMBS/{}/{}_trips.txt",
+				policy_name,policy_name), ios_base::app);
+			ofstream ambs_trip_types(fmt::format(
+				"daily_results/AMBS/{}/{}_trip_types.txt",policy_name,policy_name), 
+				ios_base::app);
+			ambs_times << solver->ambulances.size() << "\n";
+			ambs_trips << solver->ambulances.size() << "\n";
+			ambs_trip_types << solver->ambulances.size() << "\n";
+
+			for(auto& amb: solver->ambulances){
+				for(auto t: amb.times){
+					ambs_times << t << " ";
+				}
+				ambs_times << "\n";
+				for(auto location: amb.trips){
+					ambs_trips << location.first << " " << location.second << " ";
+				}
+				ambs_trips << "\n";
+				for(auto trip_type: amb.trip_types){
+					ambs_trip_types << static_cast<int>(trip_type) << " ";
+				}
+				ambs_trip_types << "\n";
+			}
+
+
 			all_waiting_on_scene.insert(all_waiting_on_scene.end(), 
 				solver->waiting_on_scene.begin(), solver->waiting_on_scene.end());
 			all_waiting_on_scene_penalized.insert(all_waiting_on_scene_penalized.end(), 
@@ -122,8 +151,8 @@ void PolicyTester::one_stage_old(){
 			++s;
 		}
 
+		const string policy_name = policies_names.find(policy)->second;
 		for(int g = 0; g < 7; ++g){
-			const string policy_name = policies_names.find(policy)->second;
 			ofstream daily(fmt::format("daily_results/g{}/{}/{}.txt", g, policy_name, 
 				policy_name), ios::out);
 			ofstream daily_pen(fmt::format("daily_results/g{}/{}/{}_pen.txt", g, policy_name, 
@@ -151,6 +180,10 @@ void PolicyTester::one_stage_old(){
 			daily.close();
 			daily_pen.close();
 		}
+
+
+
+		
 	
 		Stats stats(all_waiting_on_scene, all_waiting_on_scene_penalized, all_waiting_to_hospital);
 		fmt::print("Policy {} Mean time = {:.1f} Mean pen = {:.1f}, Max pen = {:.1f} \
