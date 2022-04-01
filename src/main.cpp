@@ -23,11 +23,11 @@ int main(int argc, char* argv[]){
 	
 	g_params = load_params(argc,argv);
 
-	std::string calls_path = fmt::format("{}/calls.dat", g_params.generator_folder);
-	std::string neighbors_path = fmt::format("{}/neighbors.dat", g_params.generator_folder);
-	std::string info_path = fmt::format("{}/info.dat", g_params.generator_folder);
+	// std::string calls_path = fmt::format("{}/calls.dat", g_params.generator_folder);
+	// std::string neighbors_path = fmt::format("{}/neighbors.dat", g_params.generator_folder);
+	// std::string info_path = fmt::format("{}/info.dat", g_params.generator_folder);
 
-	GRBEnv env;
+	// GRBEnv env;
 	// GeneratorRegressor gen(env, calls_path,neighbors_path, info_path);
 	// auto t0 = std::chrono::high_resolution_clock::now();
 	// gen.test();
@@ -37,14 +37,14 @@ int main(int argc, char* argv[]){
 
 	// fmt::print("T regressor old(s): {}\n", run_time_quick);
 
-	QuickGeneratorRegressor qr_gen(env,calls_path,neighbors_path, info_path);
-	auto t0 = std::chrono::high_resolution_clock::now();
-	qr_gen.test();
-	auto dt = std::chrono::high_resolution_clock::now();
-	double run_time_quick = std::chrono::duration_cast<chrono::nanoseconds>(dt - t0).count() 
-		/ pow(10,9);
+	// QuickGeneratorRegressor qr_gen(env,calls_path,neighbors_path, info_path);
+	// auto t0 = std::chrono::high_resolution_clock::now();
+	// qr_gen.test();
+	// auto dt = std::chrono::high_resolution_clock::now();
+	// double run_time_quick = std::chrono::duration_cast<chrono::nanoseconds>(dt - t0).count() 
+	// 	/ pow(10,9);
 
-	fmt::print("T regressor quick(s): {}\n", run_time_quick);
+	// fmt::print("T regressor quick(s): {}\n", run_time_quick);
 
 	// Generator gen(calls_path,neighbors_path, info_path);
 	// auto t0 = std::chrono::high_resolution_clock::now();
@@ -66,10 +66,10 @@ int main(int argc, char* argv[]){
 	// fmt::print("T no regressor quick(s): {}\n", run_time_quick);
 	// fmt::print("T old(s): {}, T new(s): {}\n", run_time_old, run_time_quick);
 
-	// Instance ins;
-	// Travel travel;
-	// PolicyTester pt(ins);
-	// pt.run();
+	Instance ins;
+	Travel travel;
+	PolicyTester pt(ins);
+	pt.run();
 
 	// Instance ins("instances/no_myopic7.4.txt");
 	// ins.travel.euclidian = true;
