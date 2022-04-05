@@ -23,39 +23,14 @@ PolicyTester::PolicyTester(Instance& ins): ins(ins), travel(ins.travel),
 shared_ptr<Solver> PolicyTester::get_solver(const string& policy, vector<Call>& calls, 
 	vector<Ambulance>& ambulances, Travel& travel){
 
-	if(policy == "forward"){
-		return static_pointer_cast<Solver>(make_shared<ForwardSolver>(env,calls,ambulances,
-			ins, travel));
-	}else if(policy == "queue"){
+	if(policy == "queue"){
 		return static_pointer_cast<Solver>(make_shared<QueueSolver>(env,calls,ambulances,
-			ins, travel));
-	}else if(policy == "priorities" || policy == "priorities_a"){
-		auto solver = static_pointer_cast<Solver>(make_shared<PrioritySolver>(env,calls,ambulances,
-			ins, travel));
-		solver->travel.set_forward(policy == "priorities");
-		return solver;
-	}else if(policy == "minmax"){
-		return static_pointer_cast<Solver>(make_shared<MinMaxSolver>(env,calls,ambulances,
-			ins, travel));
-	}else if(policy == "gen_forward"){
-		return static_pointer_cast<Solver>(make_shared<GenForwardSolver>(env,calls,ambulances,
-			ins, travel));
-	}else if(policy == "gen_minmax"){
-		return static_pointer_cast<Solver>(make_shared<GenMinMaxSolver>(env,calls,ambulances,
 			ins, travel));
 	}else if(policy == "cg"){
 		return static_pointer_cast<Solver>(make_shared<CGSolver>(env,calls,ambulances,
 			ins, travel));
 	}else if(policy == "model"){
 		return static_pointer_cast<Solver>(make_shared<ModelSolver>(env,calls,ambulances,
-			ins, travel));
-	}else if(policy == "minmaxp" || policy == "minmaxp_a"){
-		auto solver = static_pointer_cast<Solver>(make_shared<MinMaxPSolver>(env,calls,ambulances,
-			ins, travel));
-		solver->travel.set_forward(policy == "minmaxp");
-		return solver;
-	}else if(policy == "non_miopyc"){
-		return static_pointer_cast<Solver>(make_shared<NonMiopycSolver>(env,calls,ambulances,
 			ins, travel));
 	}
 
