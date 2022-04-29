@@ -2,7 +2,6 @@
 #define _TRAVEL_H
 
 #include "main.h"
-
 class Instance;
 class Call;
 class Ambulance;
