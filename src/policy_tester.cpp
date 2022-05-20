@@ -48,7 +48,15 @@ void PolicyTester::run(){
 }
 
 
+void PolicyTester::run_scenario(int index_scenario){
+	auto solver = get_solver("queue", ins.calls[index_scenario], ins.ambulances, travel);
+	solver->run();
+	solver->print_results();
+}
+
+
 void PolicyTester::one_stage_old(){
+
 	for(int s = 0; s < ins.calls.size(); ++s){
 		for(int i = 0; i < ins.calls[s].size(); ++i){
 			for(int a = 0; a < ambulances.size(); ++a){
@@ -75,6 +83,10 @@ void PolicyTester::one_stage_old(){
 		}
 		run_times.clear();
 		fmt::print("Policy {}\n", policy);
+		std::ofstream scenarios_results("results/baseScenario.txt", std::ios::out);
+		// std::scientific(scenarios_results);
+		// scenarios_results.precision(std::numeric_limits<double>::max_digits10);
+
 		for(auto& scenario: ins.calls){
 			// fmt::print("Scenario {} ({} calls)\n", s, scenario.size());
 			auto solver = get_solver(policy, scenario, ins.ambulances, travel);
@@ -87,33 +99,26 @@ void PolicyTester::one_stage_old(){
 				waiting_on_scene_penalized[s].push_back(
 					solver->waiting_on_scene_penalized[i]);
 			}
-			const string policy_name = policies_names.find(policy)->second;
-			ofstream ambs_times(fmt::format("daily_results/AMBS/{}/{}_times.txt",
-			policy_name,policy_name), ios_base::app);
-			ofstream ambs_trips(fmt::format("daily_results/AMBS/{}/{}_trips.txt",
-				policy_name,policy_name), ios_base::app);
-			ofstream ambs_trip_types(fmt::format(
-				"daily_results/AMBS/{}/{}_trip_types.txt",policy_name,policy_name), 
-				ios_base::app);
-			ambs_times << solver->ambulances.size() << "\n";
-			ambs_trips << solver->ambulances.size() << "\n";
-			ambs_trip_types << solver->ambulances.size() << "\n";
+			
+			Stats stats(solver->waiting_on_scene, solver->waiting_on_scene_penalized,
+				solver->waiting_to_hospital);
 
-			for(auto& amb: solver->ambulances){
-				for(auto t: amb.times){
-					ambs_times << t << " ";
-				}
-				ambs_times << "\n";
-				for(auto location: amb.trips){
-					ambs_trips << location.first << " " << location.second << " ";
-				}
-				ambs_trips << "\n";
-				for(auto trip_type: amb.trip_types){
-					ambs_trip_types << static_cast<int>(trip_type) << " ";
-				}
-				ambs_trip_types << "\n";
+
+			scenarios_results << scenario.size() << "\t" << stats.mean_waiting_on_scene<< "\t";
+			scenarios_results << stats.max_waiting_on_scene << "\t";
+			scenarios_results << stats.mean_waiting_on_scene_penalized << "\t";
+			scenarios_results << stats.max_waiting_on_scene_penalized << "\t";
+			scenarios_results << stats.mean_waiting_to_hospital << "\t";
+			scenarios_results << stats.max_waiting_to_hospital << "\t";
+			scenarios_results << stats.waiting_on_scene_q90 << "\t";
+			scenarios_results << stats.waiting_to_hospital_q90 << "\n";
+
+			for(int i = 0; i < scenario.size(); ++i){
+				scenarios_results << solver->waiting_on_scene[i] << "\t";
+				scenarios_results << solver->waiting_on_scene_penalized[i] << "\t";
+				scenarios_results << solver->waiting_to_hospital[i] << "\t";
+				scenarios_results << solver->which_ambulance[i] << "\n";
 			}
-
 
 			all_waiting_on_scene.insert(all_waiting_on_scene.end(), 
 				solver->waiting_on_scene.begin(), solver->waiting_on_scene.end());
@@ -1438,3 +1443,31 @@ bool PolicyTester::can_answer(Ambulance& amb, Call& call){
 PolicyTester::~PolicyTester(){
 
 }
+
+
+// const string policy_name = policies_names.find(policy)->second;
+			// ofstream ambs_times(fmt::format("daily_results/AMBS/{}/{}_times.txt",
+			// policy_name,policy_name), ios_base::app);
+			// ofstream ambs_trips(fmt::format("daily_results/AMBS/{}/{}_trips.txt",
+			// 	policy_name,policy_name), ios_base::app);
+			// ofstream ambs_trip_types(fmt::format(
+			// 	"daily_results/AMBS/{}/{}_trip_types.txt",policy_name,policy_name), 
+			// 	ios_base::app);
+			// ambs_times << solver->ambulances.size() << "\n";
+			// ambs_trips << solver->ambulances.size() << "\n";
+			// ambs_trip_types << solver->ambulances.size() << "\n";
+
+			// for(auto& amb: solver->ambulances){
+			// 	for(auto t: amb.times){
+			// 		ambs_times << t << " ";
+			// 	}
+			// 	ambs_times << "\n";
+			// 	for(auto location: amb.trips){
+			// 		ambs_trips << location.first << " " << location.second << " ";
+			// 	}
+			// 	ambs_trips << "\n";
+			// 	for(auto trip_type: amb.trip_types){
+			// 		ambs_trip_types << static_cast<int>(trip_type) << " ";
+			// 	}
+			// 	ambs_trip_types << "\n";
+			// }

@@ -624,3 +624,6 @@ daily_results/AMBS/NM/NM_trip_types.txt
 daily_results/AMBS/NM/NM_trips.txt
 daily_results/AMBS/readme_ambs
 calibration/Districts_km/lambda_max_likelihood.txt
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log

@@ -103,6 +103,9 @@ public:
 	vector<int> get_nearest_base(vector<Call>& calls);
 
 
+	void run_scenario(int index_scenario);
+
+
 	bool can_answer(Ambulance& amb, Call& call);
 };
 
