@@ -413,7 +413,7 @@ void Instance::load_real_data(){
 		new_path += token + "/";
 	}
 
-	ofstream scenarios_for_test(new_path+"/scenarios_corrected.txt", std::ios::out);
+	// ofstream scenarios_for_test(new_path+"/scenarios_corrected.txt", std::ios::out);
 	// std::scientific(scenarios_results);
 	
 	// Time - Region index - Priority - Day - Time on scene - Lat - Long - Time at hospital - 
@@ -426,68 +426,66 @@ void Instance::load_real_data(){
 		std::vector<Call> scenario;
 		scenario.reserve(scenario_size);
 		int id = 0;
-		scenarios_for_test << scenario_size << "\n";
+		// scenarios_for_test << scenario_size << "\n";
 		for(int i = 0; i < scenario_size; ++i){
 			calls_arq >> time >> region >> priority >> day >> time_on_scene;
 			calls_arq >> lat >> longi >> time_at_hospital >> time_at_cleaning;
 			calls_arq >> cleaning_needed >> hospital_needed >> index_hospital;
+			calls_arq >> index_cleaning;
 			// fmt::print("line: {} {} {} {} {} {} {} {} {} {} {} {}\n",time,region,priority,
 			// 	day,time_on_scene,lat,longi,time_at_hospital,time_at_cleaning, cleaning_needed,
 			// 	hospital_needed, index_hospital);
-			region -= 1;
-			priority -= 1;
-			day -= 1;
-			lat += 1.0;
-			longi += 1.0;
-			double min_d = GRB_INFINITY;
-			uniform_int_distribution<int> rand_sample(0,samples[region].size()-1);
-			int l = rand_sample(gen);
+			// double min_d = GRB_INFINITY;
+			// uniform_int_distribution<int> rand_sample(0,samples[region].size()-1);
+			// int l = rand_sample(gen);
 
-			auto call_location = samples[region][l];
+			// auto call_location = samples[region][l];
+			auto call_location = make_pair(lat,longi);
 			
-			index_hospital = -1;
-			if(g_params.h_random_hospital){
-				std::uniform_int_distribution<int> h_rand(0,nb_hospitals-1);
-				index_hospital = h_rand(gen);
-			}else{
-				for(int h = 0; h < nb_hospitals; ++h){
-					double travel_time = travel.travel_time(call_location,hospitals[h]);
-					if(travel_time < min_d){
-						min_d = travel_time;
-						index_hospital = h;
-					}
-				}
-			}
-			min_d = GRB_INFINITY;
-			index_cleaning = -1;
-			Location previous_location = (hospital_needed) ? hospitals[index_hospital] : 
-					call_location;
-			for(int c = 0; c < nb_cleaning_bases; ++c){
-				double travel_time = travel.travel_time(previous_location, cleaning_bases[c]);
-				if(travel_time < min_d){
-					min_d = travel_time;
-					index_cleaning = c;
-				}
-			}
+			// index_hospital = -1;
+			// if(g_params.h_random_hospital){
+			// 	std::uniform_int_distribution<int> h_rand(0,nb_hospitals-1);
+			// 	index_hospital = h_rand(gen);
+			// }else{
+			// 	for(int h = 0; h < nb_hospitals; ++h){
+			// 		double travel_time = travel.travel_time(call_location,hospitals[h]);
+			// 		if(travel_time < min_d){
+			// 			min_d = travel_time;
+			// 			index_hospital = h;
+			// 		}
+			// 	}
+			// }
+			// min_d = GRB_INFINITY;
+			// index_cleaning = -1;
+			// Location previous_location = (hospital_needed) ? hospitals[index_hospital] : 
+			// 		call_location;
+			// for(int c = 0; c < nb_cleaning_bases; ++c){
+			// 	double travel_time = travel.travel_time(previous_location, cleaning_bases[c]);
+			// 	if(travel_time < min_d){
+			// 		min_d = travel_time;
+			// 		index_cleaning = c;
+			// 	}
+			// }
 
 
-			if(priority == 0){
-				std::uniform_int_distribution<int> cb_rand(0,4);
-				if(cb_rand(gen) == 0){
-					cleaning_needed = 1;
-				}
-			}
+			// if(priority == 0){
+			// 	std::uniform_int_distribution<int> cb_rand(0,4);
+			// 	if(cb_rand(gen) == 0){
+			// 		cleaning_needed = 1;
+			// 	}
+			// }
+
 			// Time - Region index - Priority - Day - Time on scene - Lat - Long - Time at hospital - 
 			// TimeCleaningBase - Cleaning needed - Hospital needed - index hospital
-			scenarios_for_test << time << " " << region << " " << priority << " ";
-			scenarios_for_test << day << " " << 0.333 << " " << call_location.first << " ";
-			scenarios_for_test << call_location.second << " " << 0.333 << " " << 0.666 << " ";
-			scenarios_for_test << cleaning_needed << " " << hospital_needed << " ";
-			scenarios_for_test << index_hospital << " " << index_cleaning << "\n";
+			// scenarios_for_test << time << " " << region << " " << priority << " ";
+			// scenarios_for_test << day << " " << 0.333 << " " << call_location.first << " ";
+			// scenarios_for_test << call_location.second << " " << 0.333 << " " << 0.666 << " ";
+			// scenarios_for_test << cleaning_needed << " " << hospital_needed << " ";
+			// scenarios_for_test << index_hospital << " " << index_cleaning << "\n";
 			
 
-			scenario.push_back(Call(id++, time*slot_duration, call_location, index_hospital, 
-				index_cleaning, priority, hospital_needed, cleaning_needed,
+			scenario.push_back(Call(id++, time*slot_duration, call_location, 
+				index_hospital, index_cleaning, priority, hospital_needed, cleaning_needed,
 				0.333*slot_duration, 0.333*slot_duration, 0.666*slot_duration));
 			auto& call = scenario.back();
 			call.region = region;

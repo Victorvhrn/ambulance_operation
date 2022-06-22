@@ -140,8 +140,8 @@ void QueueSolver::run(){
 			auto& call = calls[queue[i]];
 			double min_time = GRB_INFINITY;
 			int index_amb = -1;
-			// print("Call {} {} ({},{}) {}:\n", call.id, call.time, call.location.first,
-			// 	call.location.second, call.priority);
+			// print("Call {} {:.3f} ({:.3f},{:.3f}) {}:\n", call.id, call.time, 
+			// 	call.location.first, call.location.second, call.priority);
 			for(auto& amb: ambulances){
 				if(can_answer(amb,call)){
 					double time_amb = travel.get_response_time(amb,call,time);

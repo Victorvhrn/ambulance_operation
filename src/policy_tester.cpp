@@ -69,6 +69,7 @@ void PolicyTester::one_stage_old(){
 	vector<double> all_waiting_on_scene;
 	vector<double> all_waiting_on_scene_penalized;
 	vector<double> all_waiting_to_hospital;
+
 	all_waiting_on_scene.reserve(ins.nb_scenarios*ins.calls[0].size());
 	all_waiting_on_scene_penalized.reserve(ins.nb_scenarios*ins.calls[0].size());
 	all_waiting_to_hospital.reserve(ins.nb_scenarios*ins.calls[0].size());
@@ -82,7 +83,7 @@ void PolicyTester::one_stage_old(){
 			waiting_on_scene_penalized[s].clear();
 		}
 		run_times.clear();
-		fmt::print("Policy {}\n", policy);
+		// fmt::print("Policy {}\n", policy);
 		std::ofstream scenarios_results("results/baseScenario.txt", std::ios::out);
 		// std::scientific(scenarios_results);
 		// scenarios_results.precision(std::numeric_limits<double>::max_digits10);
