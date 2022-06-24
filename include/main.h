@@ -30,7 +30,6 @@
 #include <boost/geometry/geometries/geometries.hpp>
 #include <boost/multi_array.hpp>
 #include <cassert>
-#include <cmath>
 #include <sstream>
 #include <climits>
 #include <sys/wait.h>

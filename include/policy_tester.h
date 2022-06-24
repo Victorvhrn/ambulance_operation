@@ -63,8 +63,8 @@ public:
 	// const map<string,string> policies_names{{"queue", "CA"}, {"forward", "BM"}, {"priorities", 
 	// 	"GHP1"}, {"minmax", "GHP2"}, {"non_miopyc", "NM"}};
 
-	const vector<string> policies{"queue"};
-	const map<string,string> policies_names{{"queue", "CA"}};
+	const vector<string> policies{"forward"};
+	const map<string,string> policies_names{{"forward", "BM"}};
 
 
 	shared_ptr<Solver> get_solver(const string& policy, vector<Call>& calls, 

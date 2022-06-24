@@ -104,11 +104,11 @@ Location Travel::ambulance_position(Ambulance& amb, double t){
 		double d = sqrt(pow(p11 - p21, 2) + pow(p12 - p22, 2) + pow(p13 - p23, 2));
 		double alpha = 2*asin(d/(2*R));
 		double dearth = R*alpha;
-		double ttravel = dearth/v;
+		double ttravel = (dearth/v)*3600;
 		double t0 = amb.arrival_time_at_f_last_trip;
 		Location location = amb.free_location;
 		if(t < t0 + ttravel){
-			double alpha0 = (t-t0)*v/R;
+			double alpha0 = ((t-t0)/3600)*(v/R);
 			double beta = sin(alpha-alpha0)/sin(alpha);
 			double gamma = cos(alpha-alpha0)-sin(alpha-alpha0)*cos(alpha)/sin(alpha);
 			double curr_p1 = beta*p11 + gamma*p21;
@@ -260,7 +260,7 @@ double Travel::lat_long_travel_distance(Location& a, Location& b){
 	double p21 = R*cos(radian*b.first)*cos(radian*b.second);
 	double p22 = R*cos(radian*b.first)*sin(radian*b.second);
 	double p23 = R*sin(radian*b.first);
-
+	
 	double d = sqrt(pow(p11 - p21, 2) + pow(p12 - p22, 2) + pow(p13 - p23, 2));
 	return 2*R*asin(d/(2*R));
 }

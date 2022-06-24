@@ -25,6 +25,9 @@ shared_ptr<Solver> PolicyTester::get_solver(const string& policy, vector<Call>& 
 	if(policy == "queue"){
 		return static_pointer_cast<Solver>(make_shared<QueueSolver>(env,calls,ambulances,
 			ins, travel));
+	}else if(policy == "forward"){
+		return static_pointer_cast<Solver>(make_shared<ForwardSolver>(env,calls,ambulances,
+			ins, travel));
 	}else if(policy == "cg"){
 		return static_pointer_cast<Solver>(make_shared<CGSolver>(env,calls,ambulances,
 			ins, travel));
@@ -92,7 +95,7 @@ void PolicyTester::one_stage_old(){
 			// fmt::print("Scenario {} ({} calls)\n", s, scenario.size());
 			auto solver = get_solver(policy, scenario, ins.ambulances, travel);
 			solver->run();
-			// solver->print_results();
+			solver->print_results();
 			run_times.insert(run_times.end(), solver->run_times.begin(), 
 				solver->run_times.end());
 			for(int i = 0; i < scenario.size(); ++i){

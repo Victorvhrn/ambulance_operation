@@ -187,6 +187,65 @@ void QueueSolver::run(){
 }
 
 
+ForwardSolver::ForwardSolver(GRBEnv& env, vector<Call>& calls, vector<Ambulance>& ambulances, 
+	Instance& ins, Travel& travel): Solver(env, calls,ambulances, ins,travel){
+	travel.set_forward(true);
+}
+
+void ForwardSolver::run(){
+	travel.set_forward(true);
+	for(int i = 0; i < calls.size(); ++i){
+		auto t0 = std::chrono::high_resolution_clock::now();
+		double min_time = GRB_INFINITY;
+		int index_amb = -1;
+		auto& call = calls[i];
+		time = call.time;
+		for(auto& amb: ambulances){
+			if(can_answer(amb,call)){
+				double time_amb = travel.get_response_time(amb, call, time);
+				if(amb.id == 26){
+					std::cout << amb << " " << time_amb << "\n";
+					std::cout << "Dist = " << travel.lat_long_travel_distance(
+						amb.base_location, call.location) << "\n";
+					fmt::print("base {}\n", amb.base_location);
+					fmt::print("call {}\n", call.location);
+					std::cin.get();
+				}
+				if(time_amb < min_time){
+					min_time = time_amb;
+					index_amb = amb.id;
+				}else if(abs(time_amb - min_time) <  g_params.EPS && index_amb != -1 &&
+					amb.type > ambulances[index_amb].type){
+					min_time = time_amb;
+					index_amb = amb.id;
+				}
+			}
+		}
+		
+		if(index_amb >= 0){
+			double waiting_on_scene_i = time + min_time - call.time;
+			double waiting_to_hospital_i = ambulances[index_amb].answer_call(call, travel, 
+				ins, time, min_time, nearest_base[i]);
+
+			waiting_on_scene[i] = waiting_on_scene_i;
+			waiting_on_scene_penalized[i] = waiting_on_scene_i*ins.penalties[call.priority];
+			waiting_to_hospital[i] = waiting_to_hospital_i;
+			which_ambulance[i] = index_amb;
+			calls_end[i] = call.end;
+		}else{
+			waiting_on_scene[i] = GRB_INFINITY;
+			waiting_on_scene_penalized[i] = GRB_INFINITY;
+			waiting_to_hospital[i] = GRB_INFINITY;
+			calls_end[i] = GRB_INFINITY;
+			which_ambulance[i] = -1;
+		}
+		auto dt = std::chrono::high_resolution_clock::now();
+		run_times.push_back(std::chrono::duration_cast<chrono::microseconds>(dt - 
+			t0).count());
+	}
+}
+
+
 
 CGSolver::CGSolver(GRBEnv& env, vector<Call>& calls, 
 	vector<Ambulance>& ambulances, Instance& ins, Travel& travel): 

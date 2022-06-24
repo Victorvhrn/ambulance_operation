@@ -492,6 +492,10 @@ void Instance::load_real_data(){
 			// std::cout << call << " " << call.location.first << " " << call.location.second << "\n";
 		}
 		// fmt::print("=============================\n");
+		double first_time = scenario[0].time;
+		for(auto& call: scenario){
+			call.time -= first_time;
+		}
 		calls.push_back(scenario);
 	}
 	calls_arq.close();
